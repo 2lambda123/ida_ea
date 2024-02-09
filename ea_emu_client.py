@@ -8,6 +8,7 @@ from idaapi import *
 from os import name
 from subprocess import Popen
 from time import sleep
+from security import safe_command
 
 # Importing Unicorn Emulator directly into the IDAPython environment causes instability in IDA (random crashes ect.)
 # As a result, Unicorn emulator is decoupled from IDA and runs as a seperate process communicating with IDA using a local socket (port 28745)
@@ -112,7 +113,7 @@ def launch_server():
 
     # Launch emulation server as a seperate process (see top for details why)
     global server_running
-    Popen("python \"%sea_emu_server.py\"" % root_dir, shell=True if name=="posix" else False)
+    safe_command.run(Popen, "python \"%sea_emu_server.py\"" % root_dir, shell=True if name=="posix" else False)
 
     server_running = True
 
