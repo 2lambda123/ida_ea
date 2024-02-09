@@ -17,26 +17,88 @@ from security import safe_command
 class Hook(DBG_Hooks):
 
     def __init__(self):
+        """This function initializes the DBG_Hooks class.
+        Parameters:
+            - self (object): The object to be initialized.
+        Returns:
+            - None: This function does not return anything.
+        Processing Logic:
+            - Initialize the DBG_Hooks class.
+            - No parameters are needed.
+            - No return value is expected.
+            - Calls the __init__ function of the DBG_Hooks class."""
+        
         DBG_Hooks.__init__(self)
 
     def dbg_bpt(self, tid, ea):
+        """"Sets a breakpoint at the specified address for the given thread ID and returns 0 if successful."
+        Parameters:
+            - tid (int): Thread ID to set breakpoint for.
+            - ea (int): Address to set breakpoint at.
+        Returns:
+            - int: 0 if breakpoint was successfully set.
+        Processing Logic:
+            - Sends a command to set breakpoint.
+            - Returns 0 if successful."""
+        
         send()
         return 0
 
     def dbg_step_into(self):
+        """"Executes a step into debugging command and returns 0 upon completion."
+        Parameters:
+            - self (object): The current object.
+        Returns:
+            - int: 0 upon successful completion of the step into command.
+        Processing Logic:
+            - Executes the send() function.
+            - Returns 0 upon completion."""
+        
         send()
         return 0
 
     def dbg_step_until_ret(self):
+        """"""
+        
         send()
         return 0
 
     def dbg_step_over(self):
+        """"Executes a single step in the debugging process and returns 0 upon completion."
+        Parameters:
+            - self (object): The debugger object.
+        Returns:
+            - int: 0 upon completion of the step.
+        Processing Logic:
+            - Executes a single step.
+            - Sends the step command.
+            - Returns 0 upon completion."""
+        
         send()
         return 0
 
 
 def send(addr=None, code=None):
+    """Sends the specified address and code to the server for emulation and annotation.
+    Parameters:
+        - addr (int): The address to be sent to the server for emulation.
+        - code (str): The code to be sent to the server for annotation.
+    Returns:
+        - None: Does not return any value.
+    Processing Logic:
+        - Checks if the process is paused/suspended.
+        - If the process is not paused/suspended, it gets the current instruction pointer (RIP) and sets a breakpoint at that address.
+        - Reads the memory at the specified address.
+        - If the process was paused/suspended, it removes the breakpoint.
+        - Creates a socket and connects to the server.
+        - Sends the address, code, number of bits, and server print to the server.
+        - Receives data from the server and processes it accordingly.
+        - Closes the socket.
+        - If the annotation flag is set, it checks if the RIP is in the arguments and removes it.
+        - Loops through the arguments and checks if there are any changes to the registers.
+        - If there are changes, it adds a comment to the address with the register changes.
+        - If there are no changes, it adds a comment to the address stating that there were no register changes."""
+    
 
     if get_process_state() != -1:
         ea_warning("Process must be paused/suspended")
@@ -110,6 +172,19 @@ def send(addr=None, code=None):
 
 
 def launch_server():
+    """"Launches an emulation server as a separate process."
+    Parameters:
+        - None
+    Returns:
+        - None
+    Processing Logic:
+        - Uses safe_command.run() to launch the server.
+        - Sets server_running to True.
+        - Uses Popen to execute the command.
+        - Uses root_dir to specify the directory.
+    Example:
+        launch_server()"""
+    
 
     # Launch emulation server as a seperate process (see top for details why)
     global server_running
@@ -118,6 +193,19 @@ def launch_server():
     server_running = True
 
 def close_server(arg):
+    """Closes the server by setting the global variable server_running to False.
+    Parameters:
+        - arg (any): Optional argument, not used in this function.
+    Returns:
+        - None: No return value.
+    Processing Logic:
+        - Sets server_running to False.
+        - Creates a socket object.
+        - Connects to the specified TCP_IP and TCP_PORT.
+        - Sends a message to the server to quit.
+    Example:
+        close_server()"""
+    
 
     global server_running
 
@@ -129,6 +217,8 @@ def close_server(arg):
 
 
 def ea_emulate():
+    """"""
+    
 
     global form
     global a
@@ -156,6 +246,8 @@ def ea_emulate():
 
 
 def toggle_hooking(state):
+    """"""
+    
 
     global h
     global hooked
@@ -171,11 +263,15 @@ def toggle_hooking(state):
 
 
 def set_annotate(state):
+    """"""
+    
     global annotate
     annotate = True if state else False
 
 
 def set_server_print(state):
+    """"""
+    
     global server_print
     server_print = True if state else False
 
