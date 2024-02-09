@@ -6,6 +6,7 @@ from os.path import isdir
 from idaapi import *
 from idc import *
 from subprocess import Popen
+from security import safe_command
 
 try:
     import pandas as pd
@@ -47,7 +48,7 @@ def dump():
     dump_loc = config["trace_dir"] + ("/" if "/" in config["trace_dir"] else "\\") + str(int(time.time())) + ".pickle"
     df.to_pickle(dump_loc)
     ea_warning("Dumped IDA Trace to " + dump_loc,
-               buttons=(("Open Folder", lambda: Popen("explorer " + config["trace_dir"], shell=True), False),
+               buttons=(("Open Folder", lambda: safe_command.run(Popen, "explorer " + config["trace_dir"], shell=True), False),
                 ("Open In Console", lambda: open_in_console(dump_loc), False)),
                title="EA Trace")
 
@@ -55,7 +56,7 @@ def dump():
 
 
 def open_in_console(dump_loc):
-    Popen('python "%s" "%s"' % (root_dir + "ea_read_t.py", dump_loc))
+    safe_command.run(Popen, 'python "%s" "%s"' % (root_dir + "ea_read_t.py", dump_loc))
 
 
 def append(ea):
